@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CampusTeam — Find the people your project needs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#12213D;
+    --navy-light:#1D3564;
+    --cream:#FBF8F2;
+    --card:#FFFFFF;
+    --ink:#16213A;
+    --muted:#6B7280;
+    --line:#E8E4DA;
+    --citrus:#FF6B35;
+    --citrus-dark:#E2551F;
+    --teal:#1F9A8C;
+    --coral:#E63946;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    color:var(--ink);
+    background:var(--cream);
+  }
+  a{ color:inherit; }
+
+  nav{
+    position:sticky; top:0; z-index:40;
+    background:var(--navy);
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 28px;
+  }
+  .logo{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700; font-size:19px; color:#fff;
+    display:flex; align-items:center; gap:8px;
+    letter-spacing:-0.3px;
+  }
+  .logo .dot{ width:9px; height:9px; border-radius:50%; background:var(--citrus); display:inline-block; }
+  .nav-actions{ display:flex; align-items:center; gap:18px; }
+  .about-link{
+    background:none; border:none; color:rgba(255,255,255,0.75);
+    font-family:'Inter',sans-serif; font-size:13.5px; cursor:pointer;
+    font-weight:500;
+  }
+  .about-link:hover{ color:#fff; }
+  .nav-cta{
+    font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:13.5px;
+    background:var(--citrus); color:#fff; border:none;
+    padding:10px 18px; border-radius:7px; cursor:pointer;
+    transition: background .15s ease, transform .15s ease;
+  }
+  .nav-cta:hover{ background:var(--citrus-dark); transform:translateY(-1px); }
+
+  .hero{
+    background: linear-gradient(180deg, var(--navy) 0%, var(--navy-light) 100%);
+    padding:64px 28px 84px;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero-inner{
+    max-width:920px; margin:0 auto;
+    text-align:center;
+    position:relative; z-index:2;
+  }
+  .hero-eyebrow{
+    display:inline-block;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px; color:var(--citrus);
+    background:rgba(255,107,53,0.12);
+    border:1px solid rgba(255,107,53,0.35);
+    padding:5px 12px; border-radius:20px;
+    margin-bottom:20px;
+  }
+  .hero h1{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:clamp(32px,5vw,52px);
+    line-height:1.1;
+    color:#fff;
+    margin:0 0 18px;
+    letter-spacing:-1px;
+  }
+  .hero h1 span{ color:var(--citrus); }
+  .hero p{
+    font-size:16px; color:rgba(255,255,255,0.72);
+    max-width:560px; margin:0 auto 34px; line-height:1.6;
+  }
+  .hero-actions{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+  .btn-primary{
+    font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:15px;
+    background:var(--citrus); color:#fff; border:none;
+    padding:14px 26px; border-radius:8px; cursor:pointer;
+    box-shadow:0 8px 20px rgba(255,107,53,0.35);
+    transition: transform .15s ease;
+  }
+  .btn-primary:hover{ transform:translateY(-2px); }
+  .btn-secondary{
+    font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:15px;
+    background:rgba(255,255,255,0.08); color:#fff; border:1px solid rgba(255,255,255,0.25);
+    padding:14px 26px; border-radius:8px; cursor:pointer;
+    transition: background .15s ease;
+  }
+  .btn-secondary:hover{ background:rgba(255,255,255,0.16); }
+
+  .match-anim{
+    display:flex; align-items:center; justify-content:center; gap:0;
+    margin:44px auto 0; max-width:340px; position:relative; height:64px;
+  }
+  .badge{
+    width:112px; height:56px; border-radius:10px;
+    background:rgba(255,255,255,0.06);
+    border:1.5px solid rgba(255,255,255,0.22);
+    display:flex; align-items:center; gap:8px; padding:0 12px;
+    backdrop-filter: blur(2px);
+  }
+  .badge-a{ animation: slideInLeft 1s cubic-bezier(.2,.9,.3,1) both; }
+  .badge-b{ animation: slideInRight 1s cubic-bezier(.2,.9,.3,1) both; }
+  @keyframes slideInLeft{ from{ transform:translateX(-46px); opacity:0;} to{ transform:translateX(6px); opacity:1;} }
+  @keyframes slideInRight{ from{ transform:translateX(46px); opacity:0;} to{ transform:translateX(-6px); opacity:1;} }
+  .badge-avatar{ width:22px; height:22px; border-radius:50%; flex-shrink:0; }
+  .badge-avatar.one{ background:var(--citrus); }
+  .badge-avatar.two{ background:var(--teal); }
+  .badge-lines{ flex:1; }
+  .badge-lines .l1{ width:60%; height:6px; border-radius:3px; background:rgba(255,255,255,0.5); margin-bottom:5px; }
+  .badge-lines .l2{ width:40%; height:5px; border-radius:3px; background:rgba(255,255,255,0.28); }
+  .link-spark{
+    position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+    width:22px; height:22px; border-radius:50%;
+    background:var(--citrus);
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; font-size:13px; font-weight:700;
+    opacity:0; animation: pop .5s ease .9s forwards;
+    box-shadow:0 0 0 6px rgba(255,107,53,0.18);
+  }
+  @keyframes pop{ from{ opacity:0; transform:translate(-50%,-50%) scale(0.4); } to{ opacity:1; transform:translate(-50%,-50%) scale(1); } }
+
+  @media (prefers-reduced-motion: reduce){
+    .badge-a, .badge-b, .link-spark{ animation:none !important; opacity:1 !important; transform:none !important; }
+  }
+
+  .wrap{ max-width:1080px; margin:0 auto; padding:0 24px 90px; }
+  .toolbar{
+    display:flex; gap:12px; flex-wrap:wrap; align-items:center;
+    margin:-34px 0 34px;
+    position:relative; z-index:3;
+  }
+  .search{
+    flex:1; min-width:240px;
+    background:var(--card);
+    border:1.5px solid var(--line);
+    border-radius:10px;
+    padding:14px 16px;
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    color:var(--ink);
+    box-shadow:0 10px 24px -12px rgba(18,33,61,0.25);
+  }
+  .search::placeholder{ color:#9AA1AF; }
+  .count-tag{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;
+    color:var(--navy);
+    background:var(--card);
+    border:1.5px solid var(--line);
+    padding:12px 16px;
+    border-radius:10px;
+    box-shadow:0 10px 24px -12px rgba(18,33,61,0.25);
+    white-space:nowrap;
+  }
+
+  .board{
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap:20px;
+  }
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    overflow:hidden;
+    display:flex; flex-direction:column;
+    box-shadow:0 2px 6px rgba(18,33,61,0.05);
+    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  }
+  .card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 16px 30px -14px rgba(18,33,61,0.28);
+    border-color:transparent;
+  }
+  .card-strip{ height:6px; width:100%; }
+  .card-body{ padding:20px 20px 16px; display:flex; flex-direction:column; flex:1; }
+  .card-head{ display:flex; align-items:center; gap:12px; margin-bottom:14px; }
+  .avatar{
+    width:42px; height:42px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px;
+    flex-shrink:0;
+  }
+  .card h3{ font-family:'Space Grotesk',sans-serif; font-size:17px; margin:0; line-height:1.2; }
+  .card .meta{ font-size:12px; color:var(--muted); margin-top:2px; }
+  .idea{
+    font-size:13.5px; color:#3D4658; margin:0 0 14px; line-height:1.5;
+    padding:10px 12px; background:#F7F5EF; border-radius:8px;
+    border-left:3px solid var(--citrus);
+  }
+  .tag-row{ margin-bottom:10px; }
+  .tag-label{
+    font-size:10.5px; text-transform:uppercase; letter-spacing:0.07em;
+    color:var(--muted); margin-bottom:6px; display:block; font-weight:700;
+  }
+  .tags{ display:flex; flex-wrap:wrap; gap:6px; }
+  .tag{ font-family:'IBM Plex Mono',monospace; font-size:11px; padding:4px 9px; border-radius:5px; color:#fff; }
+  .tag.brings{ background:var(--teal); }
+  .tag.needs{ background:var(--coral); }
+
+  .card-footer{
+    margin-top:auto; padding-top:14px;
+    display:flex; justify-content:space-between; align-items:center;
+    border-top:1px solid var(--line);
+  }
+  .contact-btn{
+    font-family:'Inter',sans-serif; font-weight:600; font-size:12.5px;
+    background:var(--navy); border:none; color:#fff;
+    padding:8px 14px; border-radius:20px; cursor:pointer;
+  }
+  .contact-btn:hover{ background:var(--navy-light); }
+  .contact-val{ font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--teal); word-break:break-all; }
+  .del-btn{ background:none; border:none; color:#C5C9D1; cursor:pointer; font-size:17px; line-height:1; padding:2px 4px; }
+  .del-btn:hover{ color:var(--coral); }
+
+  .empty{
+    grid-column:1/-1; text-align:center; color:var(--navy);
+    padding:70px 20px; background:var(--card);
+    border:1.5px dashed var(--line); border-radius:14px;
+  }
+  .empty .emoji{ font-size:34px; display:block; margin-bottom:10px; }
+  .empty strong{ font-family:'Space Grotesk',sans-serif; font-size:18px; display:block; margin-bottom:6px; }
+  .empty span{ font-size:13px; color:var(--muted); }
+
+  .overlay{
+    position:fixed; inset:0; background:rgba(18,33,61,0.6);
+    display:flex; align-items:center; justify-content:center;
+    padding:20px; z-index:50;
+  }
+  .modal{
+    background:var(--card); width:100%; max-width:470px;
+    border-radius:16px; padding:30px 28px 26px;
+    box-shadow:0 24px 60px rgba(0,0,0,0.35);
+    max-height:88vh; overflow-y:auto;
+  }
+  .modal h2{ font-family:'Space Grotesk',sans-serif; font-size:22px; margin:0 0 4px; }
+  .modal .sub{ font-size:13px; color:var(--muted); margin:0 0 20px; line-height:1.5; }
+  .field{ margin-bottom:14px; }
+  .field label{ display:block; font-size:12.5px; font-weight:600; margin-bottom:6px; color:var(--ink); }
+  .field input, .field textarea{
+    width:100%; padding:11px 12px; border:1.5px solid var(--line);
+    border-radius:8px; font-family:'Inter',sans-serif; font-size:13.5px;
+    background:#FCFBF8;
+  }
+  .field input:focus, .field textarea:focus{ outline:2px solid var(--citrus); outline-offset:1px; border-color:transparent; }
+  .field textarea{ resize:vertical; min-height:56px; }
+  .field .hint{ font-size:11px; color:var(--muted); margin-top:4px; }
+  .modal-actions{ display:flex; gap:10px; margin-top:22px; }
+  .modal-actions button{
+    flex:1; padding:12px; border-radius:9px; border:none;
+    font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:14px; cursor:pointer;
+  }
+  .cancel-btn{ background:#EFECE3; color:var(--ink); }
+  .submit-btn{ background:var(--citrus); color:#fff; }
+  .submit-btn:hover{ background:var(--citrus-dark); }
+  .submit-btn:disabled{ opacity:0.6; cursor:not-allowed; }
+
+  .about-body p{ font-size:14px; line-height:1.65; color:#3D4658; margin:0 0 14px; }
+  .about-body h4{ font-family:'Space Grotesk',sans-serif; font-size:14px; margin:18px 0 6px; }
+  .about-close{
+    margin-top:8px; width:100%; padding:12px; border-radius:9px; border:none;
+    background:var(--navy); color:#fff; font-family:'Space Grotesk',sans-serif;
+    font-weight:600; font-size:14px; cursor:pointer;
+  }
+
+  .toast{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+    background:var(--navy); color:#fff; padding:12px 22px; border-radius:24px;
+    font-size:13px; font-family:'Inter',sans-serif; box-shadow:0 10px 24px rgba(0,0,0,0.3);
+    z-index:60;
+  }
+
+  footer{ text-align:center; padding:20px; font-size:12px; color:var(--muted); }
+
+  @media (max-width:560px){
+    nav{ padding:14px 18px; }
+    .hero{ padding:48px 18px 70px; }
+    .toolbar{ margin-top:-24px; }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel">
+const { useState, useEffect, useMemo, useCallback } = React;
+
+const STRIP_COLORS = ['#FF6B35','#1F9A8C','#3968A3','#E63946','#D19B1F'];
+const AVATAR_COLORS = ['#FF6B35','#1F9A8C','#3968A3','#E63946','#8E6BC7'];
+
+function hashStr(str){
+  let h = 0;
+  for(let i=0;i<str.length;i++){ h = (h*31 + str.charCodeAt(i)) | 0; }
+  return Math.abs(h);
+}
+function colorFor(id, arr){ return arr[hashStr(id) % arr.length]; }
+function initials(name){
+  return name.trim().split(/\s+/).slice(0,2).map(w=>w[0]?.toUpperCase()).join('');
+}
+function splitTags(str){
+  return str.split(',').map(s=>s.trim()).filter(Boolean).slice(0,8);
+}
+
+const STORAGE_KEY = 'campusteam:profiles';
+const MYIDS_KEY = 'campusteam:my_ids';
+
+function AboutModal({ onClose }){
+  return (
+    <div className="overlay" onClick={(e)=>{ if(e.target.className==='overlay') onClose(); }}>
+      <div className="modal">
+        <h2>What is CampusTeam?</h2>
+        <p className="sub">The idea in plain terms.</p>
+        <div className="about-body">
+          <p>Every hackathon, class project, or startup idea needs the right mix of people — but most students only know the five friends sitting near them. CampusTeam is a public board where any student can post what they bring and what they need, so the right teammates can actually find each other.</p>
+          <h4>How it works</h4>
+          <p>Pin a card with your skills and what you're looking for. Browse the board, search by skill, and reach out directly using the contact info on someone's card.</p>
+          <h4>Our motive</h4>
+          <p>Good ideas die when a team can't form in time. CampusTeam exists to make that first step — finding people — fast, open, and free for every student on campus.</p>
+        </div>
+        <button className="about-close" onClick={onClose}>Got it</button>
+      </div>
+    </div>
+  );
+}
+
+function App(){
+  const [profiles, setProfiles] = useState([]);
+  const [myIds, setMyIds] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [query, setQuery] = useState('');
+  const [showForm, setShowForm] = useState(false);
+  const [showAbout, setShowAbout] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [revealed, setRevealed] = useState({});
+  const [toast, setToast] = useState(null);
+  const [form, setForm] = useState({ name:'', branch:'', brings:'', needs:'', idea:'', contact:'' });
+
+  const flashToast = useCallback((msg)=>{
+    setToast(msg);
+    setTimeout(()=> setToast(null), 2600);
+  },[]);
+
+  const loadAll = useCallback(async ()=>{
+    setLoading(true);
+    try{
+      const res = await window.storage.get(STORAGE_KEY, true);
+      const list = res && res.value ? JSON.parse(res.value) : [];
+      setProfiles(Array.isArray(list) ? list : []);
+    }catch(e){ setProfiles([]); }
+    try{
+      const mine = await window.storage.get(MYIDS_KEY, false);
+      const ids = mine && mine.value ? JSON.parse(mine.value) : [];
+      setMyIds(Array.isArray(ids) ? ids : []);
+    }catch(e){ setMyIds([]); }
+    setLoading(false);
+  },[]);
+
+  useEffect(()=>{ loadAll(); },[loadAll]);
+
+  const saveProfiles = async (next)=>{
+    try{
+      await window.storage.set(STORAGE_KEY, JSON.stringify(next), true);
+      setProfiles(next);
+      return true;
+    }catch(e){
+      flashToast("Couldn't save right now — try again.");
+      return false;
+    }
+  };
+  const saveMyIds = async (next)=>{
+    try{
+      await window.storage.set(MYIDS_KEY, JSON.stringify(next), false);
+      setMyIds(next);
+    }catch(e){}
+  };
+
+  const handleSubmit = async (e)=>{
+    e.preventDefault();
+    if(!form.name.trim() || !form.contact.trim()){
+      flashToast('Name and contact are required.');
+      return;
+    }
+    setSubmitting(true);
+    const id = 'p_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,8);
+    const newProfile = {
+      id, name: form.name.trim(), branch: form.branch.trim(),
+      brings: splitTags(form.brings), needs: splitTags(form.needs),
+      idea: form.idea.trim(), contact: form.contact.trim(), createdAt: Date.now()
+    };
+    const next = [newProfile, ...profiles];
+    const ok = await saveProfiles(next);
+    if(ok){
+      await saveMyIds([...myIds, id]);
+      setForm({ name:'', branch:'', brings:'', needs:'', idea:'', contact:'' });
+      setShowForm(false);
+      flashToast('Your card is live on the board!');
+    }
+    setSubmitting(false);
+  };
+
+  const handleDelete = async (id)=>{
+    const next = profiles.filter(p=>p.id !== id);
+    const ok = await saveProfiles(next);
+    if(ok){
+      await saveMyIds(myIds.filter(x=>x!==id));
+      flashToast('Card removed.');
+    }
+  };
+
+  const filtered = useMemo(()=>{
+    const q = query.trim().toLowerCase();
+    if(!q) return profiles;
+    return profiles.filter(p=>{
+      const hay = [p.name, p.branch, p.idea, ...(p.brings||[]), ...(p.needs||[])].join(' ').toLowerCase();
+      return hay.includes(q);
+    });
+  },[profiles, query]);
+
+  return (
+    <React.Fragment>
+      <nav>
+        <div className="logo"><span className="dot"></span>CampusTeam</div>
+        <div className="nav-actions">
+          <button className="about-link" onClick={()=>setShowAbout(true)}>What is this?</button>
+          <button className="nav-cta" onClick={()=>setShowForm(true)}>Post your card</button>
+        </div>
+      </nav>
+
+      <div className="hero">
+        <div className="hero-inner">
+          <span className="hero-eyebrow">FOR STUDENTS, BY STUDENTS</span>
+          <h1>Every project needs<br/>the right <span>people.</span></h1>
+          <p>CampusTeam is a public board where students post the skills they bring and the teammates they need — so hackathon and project teams can form faster.</p>
+          <div className="hero-actions">
+            <button className="btn-primary" onClick={()=>setShowForm(true)}>Post your card</button>
+            <button className="btn-secondary" onClick={()=>document.getElementById('board-anchor').scrollIntoView({behavior:'smooth'})}>Browse the board</button>
+          </div>
+          <div className="match-anim" aria-hidden="true">
+            <div className="badge badge-a">
+              <div className="badge-avatar one"></div>
+              <div className="badge-lines"><div className="l1"></div><div className="l2"></div></div>
+            </div>
+            <div className="badge badge-b">
+              <div className="badge-avatar two"></div>
+              <div className="badge-lines"><div className="l1"></div><div className="l2"></div></div>
+            </div>
+            <div className="link-spark">✓</div>
+          </div>
+        </div>
+      </div>
+
+      <div className="wrap">
+        <div id="board-anchor" className="toolbar">
+          <input className="search" placeholder="Search by skill — react, figma, ml, pitching..." value={query} onChange={e=>setQuery(e.target.value)} />
+          <div className="count-tag">{filtered.length} card{filtered.length!==1?'s':''} on the board</div>
+        </div>
+
+        <div className="board">
+          {loading && (
+            <div className="empty"><span className="emoji">📌</span><strong>Loading the board…</strong></div>
+          )}
+          {!loading && filtered.length === 0 && (
+            <div className="empty">
+              <span className="emoji">{profiles.length === 0 ? '🗒️' : '🔍'}</span>
+              <strong>{profiles.length === 0 ? "The board is empty" : "No matches"}</strong>
+              <span>{profiles.length === 0 ? "Be the first to post your card." : "Try a different skill."}</span>
+            </div>
+          )}
+          {!loading && filtered.map(p=>{
+            const strip = colorFor(p.id, STRIP_COLORS);
+            const avatarColor = colorFor(p.id + 'a', AVATAR_COLORS);
+            const isMine = myIds.includes(p.id);
+            const isRevealed = revealed[p.id];
+            return (
+              <div key={p.id} className="card">
+                <div className="card-strip" style={{ background: strip }}></div>
+                <div className="card-body">
+                  <div className="card-head">
+                    <div className="avatar" style={{ background: avatarColor }}>{initials(p.name)}</div>
+                    <div>
+                      <h3>{p.name}</h3>
+                      <div className="meta">{p.branch || 'Student'}</div>
+                    </div>
+                  </div>
+                  {p.idea && <p className="idea">{p.idea}</p>}
+                  {p.brings && p.brings.length > 0 && (
+                    <div className="tag-row">
+                      <span className="tag-label">Brings</span>
+                      <div className="tags">{p.brings.map((t,i)=><span key={i} className="tag brings">{t}</span>)}</div>
+                    </div>
+                  )}
+                  {p.needs && p.needs.length > 0 && (
+                    <div className="tag-row">
+                      <span className="tag-label">Looking for</span>
+                      <div className="tags">{p.needs.map((t,i)=><span key={i} className="tag needs">{t}</span>)}</div>
+                    </div>
+                  )}
+                  <div className="card-footer">
+                    {isRevealed ? (
+                      <span className="contact-val">{p.contact}</span>
+                    ) : (
+                      <button className="contact-btn" onClick={()=>setRevealed(r=>({...r,[p.id]:true}))}>Show contact</button>
+                    )}
+                    {isMine && <button className="del-btn" title="Remove your card" onClick={()=>handleDelete(p.id)}>✕</button>}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <footer>Built for students, one campus at a time.</footer>
+
+      {showForm && (
+        <div className="overlay" onClick={(e)=>{ if(e.target.className==='overlay') setShowForm(false); }}>
+          <div className="modal">
+            <h2>Post your card</h2>
+            <p className="sub">Visible to everyone browsing the board.</p>
+            <form onSubmit={handleSubmit}>
+              <div className="field">
+                <label>Name *</label>
+                <input value={form.name} onChange={e=>setForm(f=>({...f,name:e.target.value}))} placeholder="Ahan Raj" />
+              </div>
+              <div className="field">
+                <label>Branch / Year</label>
+                <input value={form.branch} onChange={e=>setForm(f=>({...f,branch:e.target.value}))} placeholder="B.Tech CSE (AIML), 2nd year" />
+              </div>
+              <div className="field">
+                <label>Idea / what you want to build (optional)</label>
+                <textarea value={form.idea} onChange={e=>setForm(f=>({...f,idea:e.target.value}))} placeholder="An AI tool that..." />
+              </div>
+              <div className="field">
+                <label>Skills you bring</label>
+                <input value={form.brings} onChange={e=>setForm(f=>({...f,brings:e.target.value}))} placeholder="react, figma, prompt engineering" />
+                <div className="hint">Comma-separated, up to 8</div>
+              </div>
+              <div className="field">
+                <label>Skills you're looking for</label>
+                <input value={form.needs} onChange={e=>setForm(f=>({...f,needs:e.target.value}))} placeholder="backend, ui design, pitching" />
+              </div>
+              <div className="field">
+                <label>Contact *</label>
+                <input value={form.contact} onChange={e=>setForm(f=>({...f,contact:e.target.value}))} placeholder="email, LinkedIn, or Discord handle" />
+              </div>
+              <div className="modal-actions">
+                <button type="button" className="cancel-btn" onClick={()=>setShowForm(false)}>Cancel</button>
+                <button type="submit" className="submit-btn" disabled={submitting}>{submitting ? 'Posting…' : 'Post to board'}</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {showAbout && <AboutModal onClose={()=>setShowAbout(false)} />}
+      {toast && <div className="toast">{toast}</div>}
+    </React.Fragment>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
